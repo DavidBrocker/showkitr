@@ -1,0 +1,21 @@
+Package: showkitr
+Title: Before/After Showcase Cards for Function Calls
+Version: 0.0.0.9000
+Authors@R: 
+    person("David", "Brocker", email = "davidabrocker@gmail.com", role = c("aut", "cre"))
+Description: Runs a function call, captures its before/after state, and
+    composites a styled before/after image for sharing (e.g. "function of
+    the day" posts). Includes an RStudio Addin that wraps a selected call
+    with fx_showcase() in place. Auto-detects the source package of the
+    called function to fill in title/subtitle/logo from its documentation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    fs,
+    ggplot2,
+    gt,
+    magick,
+    rlang,
+    rstudioapi
+Config/roxygen2/version: 8.0.0

@@ -1,0 +1,4 @@
+Name: Showcase selected call
+Description: Wrap the selected function call with fx_showcase()
+Binding: fx_showcase_addin
+Interactive: false
