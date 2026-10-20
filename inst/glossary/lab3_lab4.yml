@@ -1,0 +1,226 @@
+# PSY 348 glossary entries: functions from Lab 3 (central tendency) and
+# Lab 4 (z-scores, sampling, z-test). One key per function.
+# Used by showkitr::fx_glossary_page(entries = <this file>).
+# Every example names every argument on purpose (course habit).
+# YAML gotcha: a bare  n:  key parses as FALSE, so argument "n" is quoted.
+
+mean:
+  summary: "The average: add up all the values, then divide by how many there are."
+  args:
+    x: "The numbers to average, usually one column, like df$score."
+    trim: "Fraction of extreme values to drop from each end first. Leave at 0 for the ordinary mean."
+    na.rm: "TRUE ignores missing values (NA). If you leave it FALSE and any value is NA, the answer is NA."
+  example: |
+    scores <- c(4, 2, 5, 6, NA)
+    mean(x = scores, trim = 0, na.rm = TRUE)
+  see_also: [median, sd]
+  lecture: "Lecture 3"
+
+median:
+  summary: "The middle value once the numbers are sorted. Half the values are below it, half above."
+  args:
+    x: "The numbers to summarize."
+    na.rm: "TRUE ignores missing values (NA); FALSE returns NA if any value is missing."
+  example: |
+    scores <- c(6, 2, 4, 2, 8)
+    median(x = scores, na.rm = TRUE)
+  see_also: [mean]
+  lecture: "Lecture 3"
+
+sd:
+  summary: "Sample standard deviation: the typical distance of a score from the mean."
+  args:
+    x: "The numbers to measure the spread of."
+    na.rm: "TRUE ignores missing values (NA); FALSE returns NA if any value is missing."
+  example: |
+    scores <- c(4, 2, 5, 6, 3)
+    sd(x = scores, na.rm = TRUE)
+  see_also: [mean, scale]
+  lecture: "Lecture 4"
+
+round:
+  summary: "Round numbers to a set number of decimal places."
+  args:
+    x: "The number or numbers to round."
+    digits: "How many decimal places to keep. 0 rounds to a whole number."
+  example: |
+    round(x = 3.14159, digits = 2)
+  lecture: "Lecture 7"
+
+sqrt:
+  summary: "Square root. Used for the standard error: sigma divided by the square root of n."
+  args:
+    x: "A non-negative number or vector of numbers."
+  example: |
+    sigma <- 8
+    n     <- 40
+    sigma / sqrt(x = n)
+  see_also: [sd]
+  lecture: "Lecture 8"
+
+scale:
+  summary: "Convert every value in a column to a z-score: subtract the mean, divide by the standard deviation."
+  args:
+    x: "The numbers to standardize (a vector or a matrix of columns)."
+    center: "TRUE subtracts the mean from every value. FALSE leaves the center alone."
+    scale: "TRUE divides by the standard deviation. FALSE leaves the spread alone."
+  example: |
+    scores <- c(70, 76, 82, 88)
+    scale(x = scores, center = TRUE, scale = TRUE)[, 1]
+  see_also: [pnorm, mean, sd]
+  lecture: "Lecture 5"
+
+pnorm:
+  summary: "Probability of getting a score at or below q on a normal curve (area to the left)."
+  args:
+    q: "The score you are asking about. A raw score if you give the real mean and sd; a z-score if mean = 0 and sd = 1."
+    mean: "Center of the normal curve. Use the population mean for raw scores, or 0 for z-scores."
+    sd: "Spread of the normal curve. Use the population sd for raw scores, or 1 for z-scores."
+    lower.tail: "TRUE gives the area at or below q. FALSE gives the area above q."
+    log.p: "Leave FALSE. (Returns the logarithm of the probability for advanced work.)"
+  example: |
+    # Raw score and the real mean / sd ...
+    pnorm(q = 88, mean = 76, sd = 8, lower.tail = TRUE)
+    # ... equals the z-score on the standard normal.
+    pnorm(q = 1.5, mean = 0, sd = 1, lower.tail = TRUE)
+  see_also: [qnorm, dnorm]
+  lecture: "Lecture 6"
+
+qnorm:
+  summary: "The reverse of pnorm: give it a probability, get back the score that cuts off that much of the curve."
+  args:
+    p: "The probability (between 0 and 1), for example 0.90 for the 90th percentile."
+    mean: "Center of the normal curve. Use the population mean for raw scores, or 0 for z-scores."
+    sd: "Spread of the normal curve. Use the population sd for raw scores, or 1 for z-scores."
+    lower.tail: "TRUE treats p as area to the left of the score. FALSE treats p as area to the right."
+    log.p: "Leave FALSE."
+  example: |
+    # Score that marks the top 10% (90% are at or below it)
+    qnorm(p = 0.90, mean = 76, sd = 8, lower.tail = TRUE)
+  see_also: [pnorm, dnorm]
+  lecture: "Lecture 6"
+
+dnorm:
+  summary: "Height of the normal curve at a score. Use it to draw the curve, not to find probabilities."
+  args:
+    x: "The score or scores where you want the curve's height."
+    mean: "Center of the normal curve."
+    sd: "Spread of the normal curve."
+    log: "Leave FALSE."
+  example: |
+    xs <- seq(from = 50, to = 102, by = 0.1)
+    heights <- dnorm(x = xs, mean = 76, sd = 8, log = FALSE)
+  see_also: [pnorm, qnorm]
+  lecture: "Lecture 6"
+
+set.seed:
+  summary: "Fix R's random number generator so a simulation gives the same results every time you run it."
+  args:
+    seed: "Any whole number. Everyone who uses the same seed gets the same 'random' numbers."
+  example: |
+    set.seed(seed = 348)
+  see_also: [rnorm, replicate]
+  lecture: "Lecture 8"
+
+rnorm:
+  summary: "Simulate n random scores from a normal curve with the mean and sd you choose."
+  args:
+    "n": "How many scores to simulate."
+    mean: "Center of the population you are drawing from."
+    sd: "Spread of the population you are drawing from."
+  example: |
+    set.seed(seed = 348)
+    rnorm(n = 40, mean = 76, sd = 8)
+  see_also: [set.seed, replicate]
+  lecture: "Lecture 8"
+
+replicate:
+  summary: "Repeat the same code many times and collect the results. Handy for building a sampling distribution."
+  args:
+    "n": "How many times to repeat the code."
+    expr: "The code to repeat, for example the mean of a fresh random sample."
+    simplify: "TRUE (default) collapses the results into a vector when it can."
+  example: |
+    set.seed(seed = 348)
+    sample_means <- replicate(n = 5000, expr = mean(x = rnorm(n = 40, mean = 76, sd = 8)))
+    sd(x = sample_means)   # about equal to the standard error
+  see_also: [rnorm, set.seed]
+  lecture: "Lecture 8"
+
+head:
+  summary: "Show the first few rows of a data frame (or the first few values of a vector)."
+  args:
+    x: "The data frame or vector to preview."
+    "n": "How many rows (or values) to show."
+  example: |
+    head(x = mtcars, n = 6)
+  lecture: "Lecture 7"
+
+group_by:
+  summary: "Split a data frame into groups so the next step runs once per group."
+  args:
+    .data: "The data frame. With the pipe (|>) it is filled in for you."
+    ...: "The column or columns that define the groups, like artist."
+    .add: "FALSE (default) replaces any existing grouping. TRUE adds to it."
+    .drop: "Whether groups with no rows are dropped. Leave at the default."
+  example: |
+    library(dplyr)
+    group_by(.data = mtcars, cyl)
+  see_also: [summarise, count]
+  lecture: "Lab 3"
+
+summarise:
+  summary: "Collapse many rows into one summary row per group, such as a mean or a total."
+  args:
+    .data: "The data frame (usually already grouped with group_by)."
+    ...: "New columns defined as name = calculation, like avg_mpg = mean(mpg)."
+    .by: "A quicker way to group just for this step. Leave at the default."
+    .groups: "What to do with grouping afterwards. 'drop' removes it."
+  example: |
+    library(dplyr)
+    summarise(
+      .data = group_by(.data = mtcars, cyl),
+      avg_mpg = mean(x = mpg, na.rm = TRUE)
+    )
+  see_also: [group_by, mean]
+  lecture: "Lab 3"
+
+count:
+  summary: "Count how many rows fall into each category (or group of categories)."
+  args:
+    x: "The data frame."
+    ...: "The column or columns to count by."
+    wt: "Optional column to add up instead of counting rows."
+    sort: "TRUE puts the biggest counts first."
+    name: "Name for the new count column. The default is n."
+  example: |
+    library(dplyr)
+    count(x = mtcars, cyl, sort = TRUE)
+  see_also: [group_by, slice_max]
+  lecture: "Lab 3"
+
+arrange:
+  summary: "Sort the rows of a data frame by one or more columns."
+  args:
+    .data: "The data frame."
+    ...: "The column(s) to sort by. Wrap a column in desc() to sort largest first."
+    .by_group: "TRUE sorts within groups first when the data are grouped."
+  example: |
+    library(dplyr)
+    arrange(.data = mtcars, desc(mpg))
+  see_also: [slice_max]
+  lecture: "Lab 3"
+
+slice_max:
+  summary: "Keep the rows with the largest values of a column, for example the top 10."
+  args:
+    .data: "The data frame."
+    order_by: "The column to rank by."
+    "n": "How many rows to keep."
+    prop: "Instead of n, the proportion of rows to keep."
+    with_ties: "TRUE keeps rows that tie with the last one kept, so you may get more than n."
+  example: |
+    library(dplyr)
+    slice_max(.data = mtcars, order_by = mpg, n = 5, with_ties = TRUE)
+  see_also: [arrange, count]
+  lecture: "Lab 3"
