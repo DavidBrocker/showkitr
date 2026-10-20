@@ -1,3 +1,7 @@
 ^showkitr\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
+^dev$
+^cran-comments\.md$
+^\.github$
+^LICENSE\.md$

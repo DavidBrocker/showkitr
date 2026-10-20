@@ -59,13 +59,13 @@ highlighting is used whenever both \code{before} and \code{after} are
 single strings.}
 
 \item{include_benchmark}{If \code{TRUE}, shows the elapsed run time
-between the two cards. Default \code{FALSE} \u2014 timing is rarely the
+between the two cards. Default \code{FALSE} -- timing is rarely the
 point of a showcase and mostly adds noise.}
 
 \item{preserve_ggplot_theme}{If \code{FALSE} (default), ggplot objects
 are forced into a dark theme matching the card background, for
 legibility. Set \code{TRUE} when the demo IS about theming (e.g.
-showcasing what \code{+ theme_minimal()} does) \u2014 otherwise the forced
+showcasing what \code{+ theme_minimal()} does) -- otherwise the forced
 override makes before/after look identical regardless of what
 theme was actually applied.}
 
@@ -92,7 +92,7 @@ Runs \code{expr}, captures its "before" input and "after" output, and
 composites a styled before/after image for sharing (e.g. a
 "function of the day" post). When the package the called function
 belongs to can be detected, the title/subtitle/logo are pulled from
-that package automatically \u2014 pass any of them explicitly to override.
+that package automatically -- pass any of them explicitly to override.
 }
 \examples{
 \dontrun{

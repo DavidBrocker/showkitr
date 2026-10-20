@@ -43,8 +43,11 @@ Stacks one card per function into a single HTML page: the seed of a
 course glossary.
 }
 \examples{
-\dontrun{
-fx_glossary_page(c("pnorm", "qnorm", "dnorm"), pkg = "stats")
-}
+out <- fx_glossary_page(
+  c("pnorm", "qnorm", "dnorm"),
+  pkg = "stats",
+  open = FALSE,
+  save_path = tempfile(fileext = ".html")
+)
 
 }

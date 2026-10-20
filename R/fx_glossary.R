@@ -55,13 +55,17 @@
 #' @return Invisibly, the path to the saved `.html` file.
 #'
 #' @examples
-#' \dontrun{
-#' fx_glossary(pnorm)
-#' fx_glossary(pnorm, entry = list(
-#'   summary = "Probability of a score at or below q on a normal curve.",
-#'   example = "pnorm(q = 88, mean = 76, sd = 8, lower.tail = TRUE)"
-#' ))
-#' }
+#' out <- fx_glossary(pnorm, open = FALSE, save_path = tempfile(fileext = ".html"))
+#'
+#' out <- fx_glossary(
+#'   pnorm,
+#'   entry = list(
+#'     summary = "Probability of a score at or below q on a normal curve.",
+#'     example = "pnorm(q = 88, mean = 76, sd = 8, lower.tail = TRUE)"
+#'   ),
+#'   open = FALSE,
+#'   save_path = tempfile(fileext = ".html")
+#' )
 #'
 #' @export
 fx_glossary <- function(fn,
@@ -100,9 +104,12 @@ fx_glossary <- function(fn,
 #' @return Invisibly, the path to the saved `.html` file.
 #'
 #' @examples
-#' \dontrun{
-#' fx_glossary_page(c("pnorm", "qnorm", "dnorm"), pkg = "stats")
-#' }
+#' out <- fx_glossary_page(
+#'   c("pnorm", "qnorm", "dnorm"),
+#'   pkg = "stats",
+#'   open = FALSE,
+#'   save_path = tempfile(fileext = ".html")
+#' )
 #'
 #' @export
 fx_glossary_page <- function(fns,
@@ -143,9 +150,10 @@ fx_glossary_page <- function(fns,
 # Accept fx_glossary(pnorm) and fx_glossary("pnorm")
 resolve_glossary_fn <- function(fn_expr, fn_value, env) {
   if (is.function(fn_value)) {
-    attr(fn_value, "gl_name") <- if (is.symbol(fn_expr)) as.character(fn_expr) else
+    sym <- if (is.symbol(fn_expr)) as.character(fn_expr) else
       if (is.call(fn_expr) && length(fn_expr) == 3L && as.character(fn_expr[[1]]) %in% c("::", ":::"))
         as.character(fn_expr[[3]]) else NULL
+    attr(fn_value, "gl_name") <- guess_fn_name(fn_value, sym, env)
     return(fn_value)
   }
   if (is.character(fn_value) && length(fn_value) == 1L) {
@@ -154,6 +162,22 @@ resolve_glossary_fn <- function(fn_expr, fn_value, env) {
     return(f)
   }
   stop("`fn` must be a function or a single function name.", call. = FALSE)
+}
+
+# The symbol the caller typed is only trustworthy if the function's own
+# package has a function of that name (a wrapper that passes `fn` along would
+# otherwise label the card "fn"). Otherwise find the function's real name in
+# its package. Functions defined in the global environment keep the symbol.
+guess_fn_name <- function(fn_value, sym, env) {
+  same <- function(x) is.function(x) && identical(x, fn_value)
+  pkg  <- glossary_pkg(fn_value)
+  ns   <- if (!is.null(pkg)) tryCatch(asNamespace(pkg), error = function(e) NULL)
+  if (is.null(ns)) return(sym)
+  if (!is.null(sym) && same(get0(sym, envir = ns, mode = "function", inherits = FALSE))) return(sym)
+  for (nm in ls(ns, all.names = TRUE)) {
+    if (same(get0(nm, envir = ns, mode = "function", inherits = FALSE))) return(nm)
+  }
+  sym
 }
 
 # --- Card building blocks (the look lives in inst/glossary/glossary.css) ---
@@ -387,7 +411,7 @@ glossary_rd <- function(name, pkg) {
   if (!length(hit)) return(out)
   rd <- hit[[1]]
 
-  tags <- vapply(rd, function(x) attr(x, "Rd_tag") %||% "", "")
+  tags <- rd_tags(rd)
   out$title <- rd_flat(rd[tags == "\\title"])
   out$description <- rd_flat(rd[tags == "\\description"])
 
@@ -401,6 +425,9 @@ glossary_rd <- function(name, pkg) {
   }
   out
 }
+
+# Rd tag of each top-level element of an Rd object ("" when untagged)
+rd_tags <- function(rd) vapply(rd, function(x) attr(x, "Rd_tag") %||% "", "")
 
 rd_aliases <- function(rd) {
   unlist(lapply(rd, function(x) {

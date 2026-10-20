@@ -40,12 +40,16 @@ its descriptions from the installed help page, optionally overridden by a
 hand-written \code{entry}, and writes a self-contained HTML card.
 }
 \examples{
-\dontrun{
-fx_glossary(pnorm)
-fx_glossary(pnorm, entry = list(
-  summary = "Probability of a score at or below q on a normal curve.",
-  example = "pnorm(q = 88, mean = 76, sd = 8, lower.tail = TRUE)"
-))
-}
+out <- fx_glossary(pnorm, open = FALSE, save_path = tempfile(fileext = ".html"))
+
+out <- fx_glossary(
+  pnorm,
+  entry = list(
+    summary = "Probability of a score at or below q on a normal curve.",
+    example = "pnorm(q = 88, mean = 76, sd = 8, lower.tail = TRUE)"
+  ),
+  open = FALSE,
+  save_path = tempfile(fileext = ".html")
+)
 
 }

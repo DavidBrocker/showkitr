@@ -38,11 +38,6 @@
 # is a ggplot object).
 # =================================================================
 
-library(rlang)
-library(gt)
-library(magick)
-library(fs)
-
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
 # -----------------------------------------------------------------
@@ -54,7 +49,7 @@ library(fs)
 #' composites a styled before/after image for sharing (e.g. a
 #' "function of the day" post). When the package the called function
 #' belongs to can be detected, the title/subtitle/logo are pulled from
-#' that package automatically \u2014 pass any of them explicitly to override.
+#' that package automatically -- pass any of them explicitly to override.
 #'
 #' @param expr A function call to run and showcase, e.g.
 #'   `mk_similar_artists("3858833")`. Captured unevaluated via
@@ -81,12 +76,12 @@ library(fs)
 #'   highlighting is used whenever both `before` and `after` are
 #'   single strings.
 #' @param include_benchmark If `TRUE`, shows the elapsed run time
-#'   between the two cards. Default `FALSE` \u2014 timing is rarely the
+#'   between the two cards. Default `FALSE` -- timing is rarely the
 #'   point of a showcase and mostly adds noise.
 #' @param preserve_ggplot_theme If `FALSE` (default), ggplot objects
 #'   are forced into a dark theme matching the card background, for
 #'   legibility. Set `TRUE` when the demo IS about theming (e.g.
-#'   showcasing what `+ theme_minimal()` does) \u2014 otherwise the forced
+#'   showcasing what `+ theme_minimal()` does) -- otherwise the forced
 #'   override makes before/after look identical regardless of what
 #'   theme was actually applied.
 #' @param auto_detect If `TRUE` (default), attempts to detect the
@@ -263,21 +258,20 @@ detect_pkg_name <- function(call_ast, env) {
 }
 
 # Pull the one-line \title from a function's Rd documentation, from
-# the INSTALLED package's help database. Uses tools:::RdTags, which is
-# unexported (the standard trick for this — pkgdown does the same
-# thing under the hood — but technically not a stable API contract).
+# the INSTALLED package's help database. Rd tags are read from each
+# element's "Rd_tag" attribute (see rd_tags() in fx_glossary.R).
 get_fn_title <- function(fn_name, pkg_name) {
   db <- tryCatch(tools::Rd_db(pkg_name), error = function(e) NULL)
   if (is.null(db)) return(NULL)
   
   matched <- Filter(function(rd) {
-    tags <- tools:::RdTags(rd)
+    tags <- rd_tags(rd)
     fn_name %in% unlist(rd[tags == "\\alias"])
   }, db)
   if (length(matched) == 0) return(NULL)
   
   rd <- matched[[1]]
-  tags <- tools:::RdTags(rd)
+  tags <- rd_tags(rd)
   title_txt <- paste(trimws(unlist(rd[tags == "\\title"])), collapse = " ")
   if (nchar(title_txt) == 0) NULL else title_txt
 }
