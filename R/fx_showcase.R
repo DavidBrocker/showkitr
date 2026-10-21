@@ -788,7 +788,7 @@ build_runs <- function(ops, keep, hl_type) {
   runs <- list()
   cur_text <- filtered[[1]]$char
   cur_hl   <- filtered[[1]]$type == hl_type
-  for (k in seq(2, length(filtered))) {
+  for (k in seq_along(filtered)[-1]) {
     op <- filtered[[k]]
     hl <- op$type == hl_type
     if (hl == cur_hl) {
