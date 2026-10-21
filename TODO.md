@@ -14,8 +14,9 @@ glossary tests pass, `fx_showcase()` has smoke tests.
 - [ ] Install a LaTeX distribution (e.g. `tinytex::install_tinytex()`) so the PDF
       manual builds; re-run `devtools::check()` with the manual
 - [ ] Run `devtools::check_win_devel()` and `rhub::check_for_cran()`
-- [ ] Run `fx_showcase()` in a clean session on a second machine (the file header
-      still says it was never run in a clean session)
+- [x] Run `fx_showcase()` in a clean session (done 2026-10-21; found and fixed a
+      one-character diff crash). Still worth one run on a second machine, and the
+      "never run in a clean session" note in the `fx_showcase.R` header is stale
 - [ ] Confirm nothing writes outside `tempdir()` and no example opens a browser
 - [ ] Decide on `magick`/ImageMagick and `chromote` (table cards need Chrome):
       mention both in the README and `cran-comments.md`
